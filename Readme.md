@@ -19,13 +19,13 @@ Used from Spring boot initalizer
 target/weather-0.0.1-SNAPSHOT.jar
 
 #Deploy Process
-
 First Create Docker image and push the image to Docker hub and than deploy the image to Kubernets
 
 #References
-
 docker login [ARTIFACTORY-REGISTRY-URL]
 
 #GitHub
-
 https://github.com/kkavasthi/weatherAPI
+
+#Local Run
+port:8080
