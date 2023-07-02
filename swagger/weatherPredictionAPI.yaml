@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: Weather Prediction - OpenAPI 3.0
+  description: This API is used to predict the weather situation and forcast for the user to know about the weather for the city and do appropriate actions.
+  version: 1.0.
+tags:
+  - name: ping
+  - name: Retrieve weather info
+servers:
+  - url: https://weatherinfo.swagger.io/api/v1
+    description: Weather info endpoint
+basePath: /weather/v1
+paths:
+  /ping:
+    get:
+      tags:
+        - ping
+      summary: Operation to check healthof this API
+      description: 'Health Check Operation'
+      operationId: ping
+      responses:
+        '200':
+          description: OK
+          
+  /prediction/{place}:
+    get:
+      tags:
+        - Retrieve weather info
+      summary: Retrieve weather information for the given place
+      description: weather forecast will be retrieved based on the given place/city.
+      operationId: getweatherInfo
+      parameters:
+        - name: place
+          in: path
+          description: name of the place/city for weather info
+          required: true
+          schema: 
+            type: string
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherInfo'          
+        '400':
+          description: Invalid input parameters provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors' 
+        '401':
+          description: Authorization failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: requested place not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors' 
+        '409':
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors' 
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors' 
+        '503':
+          description: service unavilable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors' 
+
+#Refrenced schema for response objects
+components:
+  schemas:
+    WeatherInfo:
+      type: object
+      properties:
+        code:
+          type: string
+          example: 200
+        message:
+          type: integer
+          format: int32
+          example: 5
+        count:
+          type: integer
+          format: int32
+          example: 10
+        list:
+          type: array
+          items:
+            type: object
+            properties:
+              dt:
+                type: integer
+                format: int64
+                example: 1687413600
+              main:
+                type: object
+                properties:
+                  temp:
+                    type: number
+                    format: double
+                    example: 287.61
+                  temp_min:
+                    type: number
+                    format: double
+                    example: 287.61
+                  temp_max:
+                    type: number
+                    format: double
+                    example: 291.01
+              weather:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int32
+                      example: 804
+                    main:
+                      type: string
+                      example: cloud
+                    description:
+                      type: string
+                      example: overcast clouds
+                    icon:
+                     type: string
+                     example: 04d
+              clouds:
+                type: object
+                properties:
+                  all:
+                   type: integer
+                   format: int32
+                   example: 100
+              wind:
+                type: object
+                properties:
+                  speed:
+                    type: number
+                    format: double
+                    example: 1.29
+                  deg:
+                    type: integer
+                    format: int32
+                    example: 326
+                  gust:
+                    type: number
+                    format: double
+                    example: 1.16
+              dt_txt:
+                type: string
+                example: 2023-06-22 06:00:00
+        city:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              example: 2643743
+                    
+            name:
+              type: string
+              example: india
+            country:
+              type: string
+              example: IN
+            timezone:
+              type: integer
+              format: int32
+              example: 3600
+            coord:
+              type: object
+              properties:
+                lat:
+                  type: number
+                  format: double
+                  example: 51.5085
+                lon:
+                  type: number
+                  example: -0.1257
+              
+    errors:
+      type: object
+      title: Errors
+      properties:
+        errorCode:
+          type: string
+          example: 404
+          description: A code for type of failure or issue
+        errorDescription:
+          type: string
+          description: error description to explain the cause of issue
+      required:
+      - errorCode
+      - errorDescription
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: apiId
+      in: query
+security:
+  - api_key: []

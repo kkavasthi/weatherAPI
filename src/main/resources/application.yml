@@ -1,0 +1,27 @@
+Spring:
+  application:
+    name: weather-prediction-api
+  config:
+    activate:
+      on-profile: local
+  cloud:
+    config:
+      enabled: false
+
+weatherAPIFeignClient:
+  url: https://api.openweathermap.org/data/2.5
+
+feign:
+  hystrix:
+    enabled: false
+  client:
+    config:
+      weather-open-api:
+        errorDecoder: com.example.weather.exception.decoder.WeatherAPIDecoder
+        connectTimeout: 100
+        readTimeout: 120
+        LoggerLevel: basic
+      default:
+        connectTimeout: 500
+        readTimeout: 500
+        LoggerLevel: basic
