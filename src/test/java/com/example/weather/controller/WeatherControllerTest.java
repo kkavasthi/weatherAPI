@@ -5,6 +5,7 @@ import com.example.weather.response.CityWeatherAPIResponse;
 import com.example.weather.response.CityWeatherResponse;
 import com.example.weather.service.cityapi.CityForecastServiceImpl;
 import com.example.weather.service.weatherdetail.WeatherDetailImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,7 +50,7 @@ public class WeatherControllerTest {
    }
 
    @Test
-    public void getWeatherPrediction_Success() throws OpenAPIException {
+    public void getWeatherPrediction_Success() throws OpenAPIException, JsonProcessingException {
        String city = "mumbai";
 
 
