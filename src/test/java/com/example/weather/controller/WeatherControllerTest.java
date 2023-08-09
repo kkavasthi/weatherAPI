@@ -1,10 +1,10 @@
 package com.example.weather.controller;
 
-import com.example.weather.exception.APIException;
+import com.example.weather.exception.OpenAPIException;
 import com.example.weather.response.CityWeatherAPIResponse;
+import com.example.weather.response.CityWeatherResponse;
 import com.example.weather.service.cityapi.CityForecastServiceImpl;
 import com.example.weather.service.weatherdetail.WeatherDetailImpl;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,15 +17,12 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,11 +49,14 @@ public class WeatherControllerTest {
    }
 
    @Test
-    public void getWeatherPrediction_Success() throws APIException{
+    public void getWeatherPrediction_Success() throws OpenAPIException {
        String city = "mumbai";
 
 
-       List<CityWeatherAPIResponse> foreCast = buildCityWeatherResponse();
+       CityWeatherResponse foreCast = new CityWeatherResponse();
+       foreCast.setCity("mumbai");
+       foreCast.setCountry("IN");
+       foreCast.setCityWeatherAPIResponseList(buildCityWeatherResponse());
 
        Mockito.when(cityForecastService.getWeatherData(city)).thenReturn(foreCast);
 

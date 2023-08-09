@@ -18,7 +18,7 @@ public enum WeatherPredictionExceptionEnum  {
 
     OPENAPI_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,9006,"OPEN API Internal Server Error"),
 
-    OPENAPI_BAD_REQUEST(HttpStatus.BAD_REQUEST,404,"city not found"),
+    OPENAPI_BAD_REQUEST(HttpStatus.BAD_REQUEST,9009,"city not found"),
 
     OPENAPI_RECORD_NOT_FOUND(HttpStatus.NOT_FOUND,9008,"Resource not available");
 

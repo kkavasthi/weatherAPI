@@ -1,32 +1,22 @@
 package com.example.weather.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@Setter
+@NoArgsConstructor
 public class StandardError {
-    private String cod;
-    private String message;
+    private String serviceErrorCode;
+    private String errorCode;
+    private String errorDescription;
 
-     public StandardError(String cod, String message){
-        this.cod = cod;
-        this.message = message;
+     public StandardError(String errorCode, String errorDescription){
+        this.errorCode = errorCode;
+        this.errorDescription = errorDescription;
     }
 
-    public String getCod() {
-        return cod;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null || getClass()!= obj.getClass()) return false;
-        StandardError that = (StandardError) obj;
-        return this.cod.equalsIgnoreCase(that.cod);
-    }
-
-    @Override
-    public int hashCode(){
-        return this.message.hashCode();
-    }
 }

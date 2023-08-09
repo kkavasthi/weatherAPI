@@ -1,30 +1,19 @@
 package com.example.weather.service.cityapi;
 
 import com.example.weather.constants.WeatherConstants;
-import com.example.weather.exception.APIException;
-import com.example.weather.model.ActionForUser;
-import com.example.weather.model.StandardError;
 import com.example.weather.model.Weather;
 import com.example.weather.response.CityWeatherAPIResponse;
+import com.example.weather.response.CityWeatherResponse;
 import com.example.weather.response.WeatherDetailResponse;
 import com.example.weather.response.WeatherResponseList;
-import com.example.weather.service.weatherdetail.WeatherDetail;
 import com.example.weather.service.weatherdetail.WeatherDetailImpl;
-import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.config.ConfigDataNotFoundException;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static com.example.weather.exception.WeatherPredictionExceptionEnum.OPENAPI_INTERNAL_SERVER_ERROR;
-import static com.example.weather.model.ActionForUser.USE_SUN_SCREEN;
 
 
 @Service
@@ -47,21 +36,23 @@ public class CityForecastServiceImpl implements CityForecastService {
         this.weatherDetail = weatherDetail;
     }
     @Override
-    public List<CityWeatherAPIResponse> getWeatherData(String city)  {
+    public CityWeatherResponse getWeatherData(String city)  {
 
-        List<CityWeatherAPIResponse> predictions = new ArrayList<>();
+        CityWeatherResponse cityWeatherResponse = new CityWeatherResponse();
+
         int cnt = getRecordCount();
 
         ResponseEntity<WeatherDetailResponse> apiResponse = buildCityWeatherResponse(city, appId, cnt);
-        List<WeatherResponseList>  nextDaysForecast = apiResponse.getBody().getList().subList(currentDaySlots,cnt);
 
-        for(int i=0;i<nextDaysForecast.size()-1;i=i+WeatherConstants.SLOTS.length){
-            CityWeatherAPIResponse prediction = getWeatherDataInfo(nextDaysForecast.subList(i,i+WeatherConstants.SLOTS.length));
-            String date = nextDaysForecast.get(i).getDateText().substring(0,10);
-            prediction.setDate(date);
-            predictions.add(prediction);
-        }
-        return predictions;
+        List<CityWeatherAPIResponse> cityWeather = getCityWeather(apiResponse,cnt);
+
+        cityWeatherResponse.setCityWeatherAPIResponseList(cityWeather);
+
+        cityWeatherResponse.setCity(apiResponse.getBody().getCity().getName());
+
+        cityWeatherResponse.setCountry(apiResponse.getBody().getCity().getCountry());
+
+        return cityWeatherResponse;
     }
 
     private ResponseEntity<WeatherDetailResponse> buildCityWeatherResponse(String city, String appId, int cnt){
@@ -69,6 +60,24 @@ public class CityForecastServiceImpl implements CityForecastService {
             return weatherDetail.getWeatherDetail(city, appId, cnt);
 
     }
+
+    private List<CityWeatherAPIResponse> getCityWeather(ResponseEntity<WeatherDetailResponse> apiResponse, int cnt){
+
+        List<CityWeatherAPIResponse> predictions = new ArrayList<>();
+
+        List<WeatherResponseList>  nextDaysForecast = apiResponse.getBody().getList().subList(currentDaySlots,cnt);
+
+        for(int i=0;i<nextDaysForecast.size()-1;i=i+WeatherConstants.SLOTS.length){
+            CityWeatherAPIResponse prediction = getWeatherDataInfo(nextDaysForecast.subList(i,i+WeatherConstants.SLOTS.length));
+            String date = nextDaysForecast.get(i).getDateText().substring(0,10);
+            prediction.setDate(date);
+            predictions.add(prediction);
+
+        }
+
+        return predictions;
+    }
+
 
 
     private int getRecordCount(){

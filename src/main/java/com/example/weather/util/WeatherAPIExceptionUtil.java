@@ -1,6 +1,6 @@
 package com.example.weather.util;
 
-import com.example.weather.exception.APIException;
+import com.example.weather.exception.OpenAPIException;
 import com.example.weather.exception.WeatherPredictionExceptionEnum;
 import com.example.weather.model.StandardError;
 
@@ -10,7 +10,7 @@ public class WeatherAPIExceptionUtil {
                 exceptionEnum.getFailureCode(),
                 exceptionEnum.getFailureDescription()
         );
-        throw new APIException(exceptionMessage,exceptionEnum.getHttpStatusCode(),error);
+        throw new OpenAPIException(exceptionMessage,exceptionEnum.getHttpStatusCode(),error);
     }
 
 }
